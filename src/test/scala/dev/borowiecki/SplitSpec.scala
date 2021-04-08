@@ -1,13 +1,37 @@
 package dev.borowiecki
 
 import com.risksense.ipaddr.IpAddress
-import dev.borowiecki.sets.{IpRange, Split}
+import dev.borowiecki.sets.{IpRange, NeighboursCombiner, Split}
 import org.scalatest.matchers.should.Matchers
 import org.scalatest.wordspec.AnyWordSpec
+
+import scala.collection.immutable.SortedSet
 
 class SplitSpec extends AnyWordSpec with Matchers {
 
   "Split.byLastBits" should {
+
+    "works for bigger range A" in {
+      val range = IpRange(IpAddress("197.203.0.0"), IpAddress("197.203.4.255"))
+
+      val res = Split.byLastBits(8, range)
+
+      println(res)
+      res should not be empty
+
+      NeighboursCombiner.fold(SortedSet.empty[IpRange] ++ res) should be(List(range))
+    }
+
+    "works for bigger range B" in {
+      val range = IpRange(IpAddress("197.203.0.0"), IpAddress("197.206.9.255"))
+
+      val res = Split.byLastBits(8, range)
+
+      println(res)
+      res should not be empty
+
+      NeighboursCombiner.fold(SortedSet.empty[IpRange] ++ res) should be(List(range))
+    }
 
     "return identity when input has one address" in {
 

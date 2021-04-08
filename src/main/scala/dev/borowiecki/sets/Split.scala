@@ -5,15 +5,15 @@ import com.risksense.ipaddr.{IpAddress, IpNetwork}
 object Split {
 
   def byLastBits(bits: Int, range: IpRange): Seq[IpRange] = {
-    val s = range.start.numerical
-    val e = range.end.numerical
+    val s = range.start
+    val e = range.end
     val newRangesSize = Math.pow(2, bits).toInt
 
     val rangeSize = e - s
 
     val ranges = (rangeSize / newRangesSize).toInt
-    val firstIp = range.start.numerical
-    val lastIp = range.end.numerical
+    val firstIp = range.start
+    val lastIp = range.end
 
     val firstSubNetElement = IpNetwork(firstIp, 32 - bits).first
 

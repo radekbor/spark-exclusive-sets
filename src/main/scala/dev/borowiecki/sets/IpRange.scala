@@ -2,7 +2,14 @@ package dev.borowiecki.sets
 
 import com.risksense.ipaddr.IpAddress
 
-case class IpRange(start: IpAddress, end: IpAddress) {
+case class IpRange(start: RawIp, end: RawIp) extends Ordered[IpRange] {
+
+  lazy val startInIpFormat: IpAddress = IpAddress(start)
+  lazy val endInIpFormat: IpAddress = IpAddress(end)
+
+  override def toString: String = s"IpRange($startInIpFormat, $endInIpFormat)"
+
+  def size: Long = end - start + 1
 
   def reduce(other: IpRange): Option[IpRange] = {
     val left = if (this.start < other.start) {
@@ -51,7 +58,7 @@ case class IpRange(start: IpAddress, end: IpAddress) {
       } else {
         (other, this)
       }
-      if (first.end >= second.start) {
+      if (first.end >= second.start - 1) {
         // overlapping
         (IpRange(first.start, second.end), None)
       } else {
@@ -63,5 +70,38 @@ case class IpRange(start: IpAddress, end: IpAddress) {
   private def contains(other: IpRange): Boolean = {
     this.start <= other.start && other.end <= this.end
   }
+
+  override def compare(that: IpRange): Int =
+    this.start.compareTo(that.start) match {
+      case 0 => this.end.compareTo(that.end)
+      case x => x
+    }
+
+}
+
+object IpRange {
+
+  def apply(start: IpAddress, end: IpAddress): IpRange =
+    new IpRange(start.numerical, end.numerical)
+
+//  @tailrec
+//  private def combineRec(acc: List[IpRange], arg: List[IpRange]): List[IpRange] = {
+//    arg match {
+//      case Nil         => acc
+//      case head :: Nil => head :: acc
+//      case first :: second :: tail =>
+//        val (newAcc, arg) = first.combine(second) match {
+//          case (res, None)       => (acc, res :: tail)
+//          case (res, Some(next)) => (res :: acc, next :: tail)
+//        }
+//        combineRec(newAcc, arg)
+//    }
+//  }
+//
+//  def combineMany(seq: Seq[IpRange]): List[IpRange] = {
+//
+//    combineRec(List.empty, seq.toList).reverse
+//
+//  }
 
 }
