@@ -6,7 +6,7 @@ object ExclusiveDataset {
 
   def build(spark: SparkSession, path: String, bits: Int): Dataset[IpRange] = {
     import spark.implicits._
-    val rawRanges = spark.read.textFile(path).cache()
+    val rawRanges = spark.read.textFile(path)
 
     rawRanges
       .flatMap(RangeParser.parse)

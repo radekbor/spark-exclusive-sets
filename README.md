@@ -1,7 +1,19 @@
 # spark-exclusive-sets
 
-At this stage we are demonstrating how to run locally.
+Build jar using:
 
-This version of the program count lines with a and lines with b.
+```
+sbt clean assembly
+```
 
-This app require one argument that is path to file to be processed.
+Then build image:
+```
+docker build --rm=true -t bde/spark-app .
+```
+
+This app supports currently those arguments:
+
+- --bits = value should be in range 1-32, this value affect how many keys will be in app 
+- --txt-source = input file
+- --txt-expected = result of computation will be compared with content of that file
+- --target-dir = directory where csv file will be written (optional)

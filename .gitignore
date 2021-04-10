@@ -1,0 +1,12 @@
+*.bloop
+*.class
+*.iml
+*.ipr
+*.iws
+*.log
+*.metals
+.DS_Store
+.bsp
+.idea/
+data/
+target/

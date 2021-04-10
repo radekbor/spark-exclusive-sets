@@ -1,0 +1,58 @@
+version: '3.2'
+services:
+  run:
+    image: bde/spark-app
+    container_name: client
+    environment:
+      - "ENABLE_INIT_DAEMON=false"
+      - "SPARK_APPLICATION_ARGS=--txt-source /opt/spark-data/input.txt --txt-expected /opt/spark-data/expected.txt --target-dir /opt/spark-data/out"
+    depends_on:
+      - spark-master
+      - spark-worker-1
+      - spark-worker-2
+    volumes:
+      - ~/spark-apps:/opt/spark-apps
+      - ~/spark-data:/opt/spark-data
+  spark-master:
+    image: bde2020/spark-master:3.0.2-hadoop3.2
+    container_name: spark-master
+    ports:
+      - "8080:8080"
+      - "7077:7077"
+    environment:
+      - INIT_DAEMON_STEP=setup_spark
+    volumes:
+      - ~/spark-apps:/opt/spark-apps
+      - ~/spark-data:/opt/spark-data
+  spark-worker-1:
+    image: bde2020/spark-worker:3.0.2-hadoop3.2
+    container_name: spark-worker-1
+    depends_on:
+      - spark-master
+    ports:
+      - "8081:8081"
+    environment:
+      - "SPARK_MASTER=spark://spark-master:7077"
+      - "SPARK_WORKER_MEMORY=4g"
+      - "SPARK_LOCAL_IP=spark-worker-1"
+#    mem_limit: 4G
+#    mem_reservation: 4G
+    volumes:
+      - ~/spark-apps:/opt/spark-apps
+      - ~/spark-data:/opt/spark-data
+  spark-worker-2:
+    image: bde2020/spark-worker:3.0.2-hadoop3.2
+    container_name: spark-worker-2
+    depends_on:
+      - spark-master
+    ports:
+      - "8082:8081"
+    environment:
+      - "SPARK_MASTER=spark://spark-master:7077"
+      - "SPARK_WORKER_MEMORY=4g"
+      - "SPARK_LOCAL_IP=spark-worker-2"
+#    mem_limit: 4G
+#    mem_reservation: 4G
+    volumes:
+      - ~/spark-apps:/opt/spark-apps
+      - ~/spark-data:/opt/spark-data

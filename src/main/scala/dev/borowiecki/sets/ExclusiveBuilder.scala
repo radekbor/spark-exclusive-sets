@@ -28,13 +28,16 @@ object ExclusiveBuilder {
 
   }
 
-  case class OccurrencesAndBits(count: Int, bits: Int)
+  case class OccurrencesAndBits(count: Byte, bits: Int)
 
+  /**
+    * Due to optimization it make no sense to count accurate result, it is better to do mark 0, 1 or more occurrences
+    * */
   private def lastBitsHistogram(bits: Int,
                                 seq: Seq[IpRange]): Seq[OccurrencesAndBits] = {
 
     val occurrences = Array.tabulate(Math.pow(2, bits).toInt) { _ =>
-      0
+      0.byteValue()
     }
 
     seq.foreach {
@@ -43,7 +46,11 @@ object ExclusiveBuilder {
         val first = (s ^ net.first).toInt
         val last = (e ^ net.first).toInt
         Range.inclusive(first, last).foreach { x =>
-          occurrences(x) = occurrences(x) + 1
+          occurrences(x) = occurrences(x) match {
+            case 0 => 1
+            case 1 => 2
+            case y => y
+          }
         }
     }
     occurrences.toList.zipWithIndex
