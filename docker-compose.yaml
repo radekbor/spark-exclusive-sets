@@ -1,18 +1,19 @@
 version: '3.2'
 services:
-  run:
-    image: bde/spark-app
-    container_name: client
-    environment:
-      - "ENABLE_INIT_DAEMON=false"
-      - "SPARK_APPLICATION_ARGS=--txt-source /opt/spark-data/input.txt --txt-expected /opt/spark-data/expected.txt --target-dir /opt/spark-data/out"
-    depends_on:
-      - spark-master
-      - spark-worker-1
-      - spark-worker-2
-    volumes:
-      - ~/spark-apps:/opt/spark-apps
-      - ~/spark-data:/opt/spark-data
+#  run:
+#    image: bde/spark-app
+#    container_name: client
+#    environment:
+#      - "ENABLE_INIT_DAEMON=false"
+#      - "SPARK_APPLICATION_ARGS=--txt-source /opt/spark-data/input.txt --txt-expected /opt/spark-data/expected.txt --target-dir /opt/spark-data/out"
+#    depends_on:
+#      - spark-master
+#      - spark-worker-1
+#      - spark-worker-2
+#    volumes:
+#      - ~/spark-apps:/opt/spark-apps
+#      - ~/spark-data:/opt/spark-data
+#
   spark-master:
     image: bde2020/spark-master:3.0.2-hadoop3.2
     container_name: spark-master
