@@ -10,9 +10,9 @@ object ExclusiveDataset {
     import spark.implicits._
 
     ipRanges
-      .flatMap(ipRangeEncoded => {
+      .flatMap(ipRange => {
         Split
-          .byLastBits(bits, ipRangeEncoded)
+          .byLastBits(bits, ipRange)
       })
       .groupByKey({
         case IpRange(s, _) =>
