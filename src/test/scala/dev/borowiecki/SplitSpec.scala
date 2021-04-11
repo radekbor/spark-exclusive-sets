@@ -1,7 +1,7 @@
 package dev.borowiecki
 
 import com.risksense.ipaddr.IpAddress
-import dev.borowiecki.sets.{IpRange, NeighboursCombiner, Split}
+import dev.borowiecki.sets.{ExclusiveBuilder, IpRange, NeighboursCombiner, Split}
 import org.scalatest.matchers.should.Matchers
 import org.scalatest.wordspec.AnyWordSpec
 
@@ -10,6 +10,20 @@ import scala.collection.immutable.SortedSet
 class SplitSpec extends AnyWordSpec with Matchers {
 
   "Split.byLastBits" should {
+
+    "range don't start at the beginning and also don't end at the end but range can by divided by 2^bits" in {
+      val range = IpRange(IpAddress("192.2.84.42"), IpAddress("192.2.86.42"))
+
+      val res = Split.byLastBits(8, range)
+
+      res should be(
+        Vector(
+          IpRange(IpAddress("192.2.84.42"), IpAddress("192.2.84.255")),
+          IpRange(IpAddress("192.2.85.0"), IpAddress("192.2.85.255")),
+          IpRange(IpAddress("192.2.86.0"), IpAddress("192.2.86.42"))
+        )
+      )
+    }
 
     "works for bigger range A" in {
       val range = IpRange(IpAddress("197.203.0.0"), IpAddress("197.203.4.255"))

@@ -12,7 +12,9 @@ libraryDependencies := Seq(
   "org.apache.spark" %% "spark-sql" % Versions.spark,
   // scala test
   "org.scalactic" %% "scalactic" % Versions.scalaTest,
-  "org.scalatest" %% "scalatest" % Versions.scalaTest % "test"
+  "org.scalatest" %% "scalatest" % Versions.scalaTest % "test",
+
+  "org.postgresql" % "postgresql" % Versions.postgresDriver
 )
 
 assemblyMergeStrategy in assembly := {

@@ -17,9 +17,14 @@ case class IpRange(start: RawIp, end: RawIp) extends Ordered[IpRange] {
       case x => x
     }
 
+  def pretty: IpRange.IpRangePretty =
+    IpRange.IpRangePretty(startInIpFormat.toString, endInIpFormat.toString)
+
 }
 
 object IpRange {
+
+  case class IpRangePretty(start: String, end: String)
 
   def apply(start: IpAddress, end: IpAddress): IpRange =
     new IpRange(start.numerical, end.numerical)

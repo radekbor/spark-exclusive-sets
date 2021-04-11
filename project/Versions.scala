@@ -6,4 +6,6 @@ object Versions {
 
   val scalaTest = "3.2.5"
 
+  val postgresDriver = "42.2.5"
+
 }

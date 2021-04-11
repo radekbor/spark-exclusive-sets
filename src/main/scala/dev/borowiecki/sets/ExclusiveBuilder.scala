@@ -46,6 +46,12 @@ object ExclusiveBuilder {
         val first = (s ^ net.first).toInt
         val last = (e ^ net.first).toInt
         Range.inclusive(first, last).foreach { x =>
+          if (x == 256) {
+            println((s, e))
+            println(IpAddress(s))
+            println(IpAddress(e))
+            println(net)
+          }
           occurrences(x) = occurrences(x) match {
             case 0 => 1
             case 1 => 2

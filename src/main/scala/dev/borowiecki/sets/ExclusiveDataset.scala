@@ -4,12 +4,12 @@ import org.apache.spark.sql.{Dataset, SparkSession}
 
 object ExclusiveDataset {
 
-  def build(spark: SparkSession, path: String, bits: Int): Dataset[IpRange] = {
+  def build(spark: SparkSession,
+            ipRanges: Dataset[IpRange],
+            bits: Int): Dataset[IpRange] = {
     import spark.implicits._
-    val rawRanges = spark.read.textFile(path)
 
-    rawRanges
-      .flatMap(RangeParser.parse)
+    ipRanges
       .flatMap(ipRangeEncoded => {
         Split
           .byLastBits(bits, ipRangeEncoded)

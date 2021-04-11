@@ -18,7 +18,7 @@ object Split {
     val firstSubNetElement = IpNetwork(firstIp, 32 - bits).first
 
     // TODO think more about different cases
-    val correct = if (firstIp == firstSubNetElement || rangeSize < newRangesSize) {
+    val correct = if (firstIp == firstSubNetElement || rangeSize < newRangesSize || (rangeSize.toDouble % newRangesSize) == 0) {
       ranges
     } else {
       ranges + 1

@@ -1,19 +1,38 @@
 version: '3.2'
 services:
-#  run:
-#    image: bde/spark-app
-#    container_name: client
-#    environment:
-#      - "ENABLE_INIT_DAEMON=false"
-#      - "SPARK_APPLICATION_ARGS=--txt-source /opt/spark-data/input.txt --txt-expected /opt/spark-data/expected.txt --target-dir /opt/spark-data/out"
-#    depends_on:
-#      - spark-master
-#      - spark-worker-1
-#      - spark-worker-2
-#    volumes:
-#      - ~/spark-apps:/opt/spark-apps
-#      - ~/spark-data:/opt/spark-data
-#
+
+  run:
+    image: bde/spark-app
+    container_name: client
+    environment:
+      - "ENABLE_INIT_DAEMON=false"
+      #     TEXT -> DIR
+      #      - "SPARK_APPLICATION_ARGS=--txt-source /opt/spark-data/input.txt --txt-expected /opt/spark-data/expected.txt --target-dir /opt/spark-data/out"
+      #     JDBC -> DIR
+      #      - "SPARK_APPLICATION_ARGS=--bits 8 --jdbc-source-url jdbc:postgresql://postgres-db:5432/postgres?user=postgres&password=mysecretpassword --jdbc-source-table IP_RANGES -dir-target /opt/spark-data/out2"
+      #     JDBC -> JDBC
+      #      - "SPARK_APPLICATION_ARGS=--bits 8 --jdbc-source-url jdbc:postgresql://postgres-db:5432/postgres?user=postgres&password=mysecretpassword --jdbc-source-table IP_RANGES --jdbc-target-url jdbc:postgresql://postgres-db:5432/postgres?user=postgres&password=mysecretpassword --jdbc-target-table IP_RANGES_OUT  "
+      #     RANDOM -> TO CONSOLE
+      - "SPARK_APPLICATION_ARGS=--bits 8 --random-input 20 --print true "
+
+    depends_on:
+      - spark-master
+      - spark-worker-1
+      - spark-worker-2
+    volumes:
+      - ~/spark-apps:/opt/spark-apps
+      - ~/spark-data:/opt/spark-data
+
+  postgres-db:
+    image: postgres
+    container_name: postgres-ip-ranges
+    ports:
+      - "5432:5432"
+    environment:
+      - "POSTGRES_PASSWORD=mysecretpassword"
+    volumes:
+      - ./init.sql:/docker-entrypoint-initdb.d/init.sql
+
   spark-master:
     image: bde2020/spark-master:3.0.2-hadoop3.2
     container_name: spark-master
@@ -36,8 +55,8 @@ services:
       - "SPARK_MASTER=spark://spark-master:7077"
       - "SPARK_WORKER_MEMORY=4g"
       - "SPARK_LOCAL_IP=spark-worker-1"
-#    mem_limit: 4G
-#    mem_reservation: 4G
+    #    mem_limit: 4G
+    #    mem_reservation: 4G
     volumes:
       - ~/spark-apps:/opt/spark-apps
       - ~/spark-data:/opt/spark-data
@@ -52,8 +71,8 @@ services:
       - "SPARK_MASTER=spark://spark-master:7077"
       - "SPARK_WORKER_MEMORY=4g"
       - "SPARK_LOCAL_IP=spark-worker-2"
-#    mem_limit: 4G
-#    mem_reservation: 4G
+    #    mem_limit: 4G
+    #    mem_reservation: 4G
     volumes:
       - ~/spark-apps:/opt/spark-apps
       - ~/spark-data:/opt/spark-data
